@@ -3,110 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لعبة طباخ النجوم</title>
+    <title>مطبخ النجوم المحترف 👨‍🍳🔥</title>
     <style>
-        /* CSS - تنسيق شكل اللعبة */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        #game-container {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-        }
-        .ingredients {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .item {
-            padding: 10px;
-            background: #ffe4e1;
-            border: 2px solid #ff69b4;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .item:hover { transform: scale(1.1); }
-        #pot {
-            font-size: 50px;
-            margin: 20px;
-            padding: 20px;
-            border: 4px dashed #ccc;
-            border-radius: 50%;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            background: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        body { font-family: 'Arial', sans-serif; background-color: #f7f3e8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #game-area { background: #fff; width: 90%; max-width: 800px; height: 90vh; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: grid; grid-template-rows: 60px 1fr 1fr 1fr 1fr; padding: 15px; gap: 10px; }
+        h1 { text-align: center; color: #d35400; font-size: 24px; margin: 0; }
+
+        /* منطقة المكونات */
+        .section-title { font-weight: bold; color: #555; margin-bottom: 5px; text-align: right; }
+        #ingredients-shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; background: #eee; padding: 10px; border-radius: 10px; }
+        .item { font-size: 30px; background: white; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.2s; padding: 5px; }
+        .item:hover { transform: scale(1.1); border-color: #e67e22; }
+
+        /* منطقة التجهيز */
+        #prep-area { display: flex; flex-direction: column; background: #e8f8f5; padding: 10px; border-radius: 10px; }
+        #cutting-board { font-size: 40px; text-align: center; margin: 10px 0; min-height: 50px; border: 2px dashed #a3e4d7; border-radius: 10px; }
+        #current-mixture { font-size: 16px; color: #666; text-align: center; }
+
+        /* منطقة الطبخ والعصير */
+        #cooking-stations { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .station { background: #fef9e7; border: 2px solid #f7dc6f; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; position: relative; }
+        .station-icon { font-size: 40px; margin-bottom: 5px; }
+        .station:hover { background: #fcf3cf; }
+        .timer-display { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 5px; border-radius: 5px; font-size: 12px; display: none; }
+
+        /* منطقة النتائج */
+        #results-area { background: #fdf2e9; padding: 10px; border-radius: 10px; text-align: center; }
+        #final-dish { font-size: 50px; margin: 10px 0; }
+        #status-message { font-size: 18px; color: #e67e22; font-weight: bold; }
+        button#reset-btn { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; display: none;}
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <h1>👨‍🍳 مطبخ النجوم</h1>
-    <p>اختر المكونات وضعها في القدر!</p>
-    
-    <div class="ingredients">
-        <div class="item" onclick="addItem('🍅 طماطم')">🍅</div>
-        <div class="item" onclick="addItem('🧀 جبنة')">🧀</div>
-        <div class="item" onclick="addItem('🍞 خبز')">🍞</div>
-        <div class="item" onclick="addItem('🥦 بروكلي')">🥦</div>
+<div id="game-area">
+    <h1>👨‍🍳 مطبخ النجوم المحترف 👨‍🍳</h1>
+
+    <div>
+        <div class="section-title">📦 مخزن المكونات (اضغط للاختيار):</div>
+        <div id="ingredients-shelf">
+            <div class="item" onclick="selectItem('🍅', 'طماطم')">🍅</div>
+            <div class="item" onclick="selectItem('🥦', 'بروكلي')">🥦</div>
+            <div class="item" onclick="selectItem('🥔', 'بطاطس')">🥔</div>
+            <div class="item" onclick="selectItem('🧅', 'بصل')">🧅</div>
+            <div class="item" onclick="selectItem('🍗', 'دجاج')">🍗</div>
+            <div class="item" onclick="selectItem('🥩', 'لحم')">🥩</div>
+            <div class="item" onclick="selectItem('🥚', 'بيض')">🥚</div>
+            <div class="item" onclick="selectItem('🍞', 'خبز')">🍞</div>
+            <div class="item" onclick="selectItem('🧀', 'جبنة')">🧀</div>
+            <div class="item" onclick="selectItem('🍚', 'أرز')">🍚</div>
+            <div class="item" onclick="selectItem('🌾', 'دقيق')">🌾</div>
+            <div class="item" onclick="selectItem('🍓', 'فراولة')">🍓</div>
+            <div class="item" onclick="selectItem('🥭', 'مانجو')">🥭</div>
+            <div class="item" onclick="selectItem('🥛', 'حليب')">🥛</div>
+        </div>
     </div>
 
-    <div id="pot">🍲</div>
-    <div id="recipe-list">المكونات: لا يوجد</div>
-    <br>
-    <button onclick="cook()">ابدأ الطبخ! 🔥</button>
-    <p id="result"></p>
+    <div id="prep-area">
+        <div class="section-title">🔪 طاولة التحضير:</div>
+        <div id="cutting-board">🧽 فارغة</div>
+        <div id="current-mixture">المكونات المختارة: لا يوجد</div>
+    </div>
+
+    <div id="cooking-stations">
+        <div class="station" onclick="startCooking('pan')">
+            <div class="timer-display" id="timer-pan">0s</div>
+            <div class="station-icon">🍳</div>
+            <div>قلي / سلق</div>
+        </div>
+        <div class="station" onclick="startCooking('oven')">
+            <div class="timer-display" id="timer-oven">0s</div>
+            <div class="station-icon">🧱</div>
+            <div>خبز (فرن)</div>
+        </div>
+        <div class="station" onclick="startCooking('blender')">
+            <div class="timer-display" id="timer-blender">0s</div>
+            <div class="station-icon">🥤</div>
+            <div>خلاط عصير</div>
+        </div>
+    </div>
+
+    <div id="results-area">
+        <div class="section-title">🍽️ الطبق الجاهز:</div>
+        <div id="final-dish">🍽️</div>
+        <p id="status-message">جهز المكونات ثم اختر طريقة الطبخ!</p>
+        <button id="reset-btn" onclick="resetGame()">تحضير طبق جديد</button>
+    </div>
+
 </div>
 
 <script>
-    // JavaScript - منطق اللعبة
-    let ingredientsInPot = [];
+    // --- منطق اللعبة (JavaScript) ---
+    
+    let selectedIngredients = []; // المكونات الحالية على طاولة التحضير
+    let isCooking = false; // هل يوجد شيء يطبخ الآن؟
 
-    function addItem(item) {
-        ingredientsInPot.push(item);
-        document.getElementById('recipe-list').innerText = "المكونات: " + ingredientsInPot.join(' + ');
-    }
-
-    function cook() {
-        const result = document.getElementById('result');
-        if (ingredientsInPot.length === 0) {
-            result.innerText = "القدر فارغ! أضف بعض المكونات أولاً.";
+    // 1. اختيار مكون ووضعه على الطاولة
+    function selectItem(emoji, name) {
+        if (isCooking) return; // لا يمكن إضافة مكونات أثناء الطبخ
+        if (selectedIngredients.length >= 4) {
+            updateStatus("👨‍🍳 الطاولة ممتلئة! يكفي 4 مكونات.");
             return;
         }
         
-        // محاكاة نتيجة الطبخ
-        result.innerText = "جاري الطبخ... 🥣";
-        setTimeout(() => {
-            if (ingredientsInPot.includes('🍅 طماطم') && ingredientsInPot.includes('🧀 جبنة')) {
-                result.innerText = "تهانينا! صنعت بيتزا رائعة! 🍕";
-            } else {
-                result.innerText = "لقد صنعت طبخة مبتكرة! طعمها غريب لكنه لذيذ! 😋";
-            }
-            ingredientsInPot = [];
-            document.getElementById('recipe-list').innerText = "المكونات: لا يوجد";
-        }, 1500);
+        selectedIngredients.push({emoji, name});
+        drawPrepArea();
+        updateStatus("أضفت " + name + ". اختر طريقة الطبخ.");
     }
-</script>
 
-</body>
-</html>
+    // تحديث شكل طاولة التحضير
+    function drawPrepArea() {
+        const board = document.getElementById('cutting-board');
+        const mixtureText = document.getElementById('current-mixture');
+        
+        if (selectedIngredients.length === 0) {
+            board.innerText = "🧽 فارغة";
+            mixtureText.innerText = "المكونات المختارة: لا يوجد";
+            return;
+        }
+
+        board.innerText = selectedIngredients.map(i => i.emoji).join(' ');
+        mixtureText.innerText = "المكونات: " + selectedIngredients.map(i => i.name).join(' + ');
+    }
+
+    // 2. بدء عملية الطبخ (مع تايمر)
+    function startCooking(stationType) {
+        if (isCooking) return;
+        if (selectedIngredients.length === 0) {
+            updateStatus("❌ ضع مكونات على الطاولة أولاً!");
+            return;
+        }
+
+        isCooking = true;
+        const cookingTime = 3000; // 3 ثواني للطبخ
+        let timeLeft = cookingTime / 1000;
+        
+        // إظهار التايمر الخاص بالمحطة
+        const timerDisplay = document.getElementById(`timer-${stationType}`);
+        timerDisplay.style.display = 'block';
+        timerDisplay.innerText = timeLeft + 's';
+
+        updateStatus("جاري العمل... انتظر قليلاً ⏳");
+
+        // عد تنازلي
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = timeLeft + 's';
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerDisplay.style.display = 'none';
+                finishCooking(stationType);
+            }
+        }, 1000);
+    }
+
+    // 3. إنهاء الطبخ وتحديد النتيجة
+    function finishCooking(stationType) {
+        isCooking = false;
+        const resultDish = document.getElementById('final-dish');
+        const resetBtn = document.getElementById('reset-btn');
+        let finalEmoji = "🤢"; // الافتراضي: طبخة فاشلة
+        let msg = "يا للهول! هذه التركيبة غريبة جداً...";
+
+        // الحصول على أسماء المكونات فقط للتحقق
+        const names = selectedIngredients.map(i => i.name);
+
+        // --- وصفات القلي (🍳) ---
+        if (stationType === 'pan') {
+            if (names.includes('بطاطس')) { finalEmoji = "🍟"; msg = "تهانينا! بطاطس مقلية مقرمشة."; }
+            else if (names.includes('بيض')) { finalEmoji = "🍳"; msg = "بيض عيون مثالي للفتور."; }
+            else if (names.includes('دجاج') && names.includes('أرز')) { finalEmoji = "🍗🍚"; msg = "وجبة دجاج مع أرز لذيذة."; }
+            else if (names.includes('لحم')) { finalEmoji = "🥩"; msg = "ستيك مشوي رائع."; }
+        }
+        // --- وصفات الفرن (🧱) ---
+        else if (stationType === 'oven') {
+            if (names.includes('دقيق') && names.includes('جبنة') && names.includes('طماطم')) { finalEmoji = "🍕"; msg = "بيتزا إيطالية أصلية!"; }
+            else if (names.includes('دقيق') && names.includes('حليب')) { finalEmoji = "🍞"; msg = "خبز طازج من الفرن."; }
+            else if (names.includes('بطاطس')) { finalEmoji = "🥔🔥"; msg = "بطاطس مشوية صحية."; }
+        }
+        // --- وصفات
+    
