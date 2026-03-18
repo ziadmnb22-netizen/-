@@ -181,5 +181,32 @@
             else if (names.includes('دقيق') && names.includes('حليب')) { finalEmoji = "🍞"; msg = "خبز طازج من الفرن."; }
             else if (names.includes('بطاطس')) { finalEmoji = "🥔🔥"; msg = "بطاطس مشوية صحية."; }
         }
-        // --- وصفات
+        // --- وصفات الخلاط (🥤) ---
+        else if (stationType === 'blender') {
+            if (names.includes('فراولة') && names.includes('حليب')) { finalEmoji = "🥤🍓"; msg = "سموذي فراولة منعش."; }
+            else if (names.includes('مانجو')) { finalEmoji = "🥤🥭"; msg = "عصير مانجو طبيعي."; }
+            else { finalEmoji = "🥣"; msg = "سلطة فواكه منعشة."; }
+        }
+
+        resultDish.innerText = finalEmoji;
+        updateStatus(msg);
+        resetBtn.style.display = 'inline-block';
+    }
+
+    function updateStatus(text) {
+        document.getElementById('status-message').innerText = text;
+    }
+
+    function resetGame() {
+        selectedIngredients = [];
+        isCooking = false;
+        drawPrepArea();
+        document.getElementById('final-dish').innerText = "🍽️";
+        updateStatus("جهز المكونات ثم اختر طريقة الطبخ!");
+        document.getElementById('reset-btn').style.display = 'none';
+    }
+</script>
+</body>
+</html>
+
     
